@@ -3,8 +3,9 @@ import json
 from pandas.io.json import json_normalize
 import matplotlib.pyplot as plt
 import itertools
-from plant_and_segment_classes import *
+from scripts.plant_and_segment_classes import *
 import argparse
+import sys
 
 
 def vals_to_new_column(data_column):
@@ -16,8 +17,6 @@ def vals_to_new_column(data_column):
     for entry in json.loads(data_column)[0]['value']:
         list_vals.append([entry['x1'], entry['y1'], entry['x2'], entry['y2']])
     return list_vals
-
-
 
 
 def make_plant_datasheet(data_table):
@@ -70,9 +69,7 @@ def make_plant_datasheet(data_table):
                     15: 'minor_y1', \
                     16: 'minor_x2', \
                     17: 'minor_y2',},\
-                   axis = 'columns', index_col=0)
-    #figure out how to rename index
-    #df.drop(df.columns[df.columns.str.contains('unnamed',case = False)],axis = 1)
+                   axis = 'columns')
     return df
 
 
@@ -81,8 +78,7 @@ def clean_data(file_name):
     data  = pd.read_csv(file_name)
     data['listed_vals'] = data['annotations'].apply(vals_to_new_column)
     newsheet = make_plant_datasheet(data)
-    newsheet.to_csv(r'cleaned_classifications.csv')
-    return 'complete'
+    return newsheet
     
 if __name__== '__main__':
     parser = argparse.ArgumentParser('data to be imported')

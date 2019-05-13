@@ -3,8 +3,9 @@ import os
 from flask import render_template, request, flash, redirect, url_for, send_from_directory, send_file
 from werkzeug.utils import secure_filename
 from config import Config
+import sys
 
-#from scripts.plant_and_segment_classes import Segment
+from scripts.cleaning_script import clean_data
 
 def allowed_file(filename):
     if filename.rsplit('.', 1)[1].lower() == 'csv':
@@ -23,28 +24,21 @@ def upload_file():
             flash('No selected file')
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            #here, i will load the csv into the microplants scripts
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('file_downloads'))
+            df = clean_data(file) 
+            filename = 'cleaned_classifications.csv'
+            file = df.to_csv((os.path.join(app.config['UPLOAD_FOLDER'], filename)), index=False)
+            return redirect(url_for('file_downloads', filename=filename))
         if not allowed_file(file.filename):
             flash("Incorrect file type. Must be .csv")
             return redirect(request.url)
     return render_template('upload.html')
 
 @app.route('/uploads/<filename>')
-def uploaded_file(filename):
+def uploaded_file(filename): 
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
-@app.route('/file-downloads/')
-def file_downloads():
-	try:
-	    return render_template('download.html')
-	except Exception as e:
-	    return str(e)
-
-#@app.route('/return-files/')
-#def return_file():
-#    try:
-#       return send_file(filename)
- 
+@app.route('/file-downloads/<filename>', methods =['GET'])
+def file_downloads(filename):
+    if request.method == "GET":
+        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    return render_template('download.html')
