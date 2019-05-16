@@ -1,9 +1,7 @@
 from app import app
 import os
-from flask import render_template, request, flash, redirect, url_for, send_from_directory, send_file
-from werkzeug.utils import secure_filename
-from config import Config
-import sys
+from flask import render_template, request, flash, redirect, url_for, send_from_directory
+
 
 from scripts.cleaning_script import clean_data
 
@@ -33,9 +31,6 @@ def upload_file():
             return redirect(request.url)
     return render_template('upload.html')
 
-@app.route('/uploads/<filename>')
-def uploaded_file(filename): 
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 @app.route('/file-downloads/<filename>', methods =['GET'])
 def file_downloads(filename):
