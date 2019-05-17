@@ -1,11 +1,8 @@
 import pandas as pd
 import json
-from pandas.io.json import json_normalize
-import matplotlib.pyplot as plt
 import itertools
 from scripts.plant_and_segment_classes import *
 import argparse
-import sys
 
 
 def vals_to_new_column(data_column):
