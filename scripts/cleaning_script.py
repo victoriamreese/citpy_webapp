@@ -25,11 +25,12 @@ def make_plant_datasheet(data_table):
     for row_num in range(len(data_table)):
         for combo in itertools.combinations(data_table.listed_vals[row_num], 2):
             segments_to_check = CheckLeaf(combo[0],combo[1])
-            if segments_to_check.on_screen() and segments_to_check.line_segments_intersect() and segments_to_check.calc_angle_between_segments() > 80.0:
-                lengths_minor_major = segments_to_check.calc_lengths_minor_major()
-                intersection_x = segments_to_check.find_the_intersection_point()[0]
-                intersection_y = segments_to_check.find_the_intersection_point()[1]
-                df = df.append([[data_table.classification_id[row_num], \
+            if (int(data_table.workflow_id[row_num]) == 3449) and (float(data_table.workflow_version[row_num]) == 5.8):
+                if segments_to_check.on_screen() and segments_to_check.line_segments_intersect() and segments_to_check.calc_angle_between_segments() > 80.0:
+                    lengths_minor_major = segments_to_check.calc_lengths_minor_major()
+                    intersection_x = segments_to_check.find_the_intersection_point()[0]
+                    intersection_y = segments_to_check.find_the_intersection_point()[1]
+                    df = df.append([[data_table.classification_id[row_num], \
                                  data_table.user_name[row_num], \
                                  data_table.created_at[row_num], \
                                  data_table.subject_data[row_num], \
